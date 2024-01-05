@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css" />
+    <title>ToDo App</title>
+  </head>
+  <body>
+    <div class="box" id="heading">
+      <!-- DATE DATA -->
+      <%- include("partials/date.ejs") %>
+    </div>
+    
+    <div class="box" id="weather">
+      <h2>Today's Weather: <%=fahrenheit %>°F / <%=celsius %>°C </h2>
+    </div>
+    
+    <div class="box" id="mainlist">
+      <div class="box" id="checklist">
+        <% for (let i = 0; i < tasks.length; i++) { %>
+          <div class="task">
+            <input type="checkbox" id="<%= i %>" name="checkbox" value=0/>
+            <label class="unchecked" for="<%= i %>"><%= tasks[i] %></label>
+            <!-- Could modify this by adding      ^ onclick="toggleChecked(this);"-->
+          </div>
+        <% } %>
+        
+
+        <form class="item" action="/" method="post">
+          <input type="text" name="newTask" placeholder="New task..." />
+          <button type="submit" name="task">
+            <i class="fa-solid fa-arrow-right fa-sm"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+    <script>
+
+      const checkboxList = document.getElementById("checklist");
+      checkboxList.addEventListener("click", (event) => {
+        const clickedElement = event.target;
+
+        if (clickedElement.type === "checkbox") {
+          const labelElement = clickedElement.nextElementSibling;
+
+          if (labelElement.classList.contains("unchecked")) {
+            labelElement.classList.remove("unchecked");
+            labelElement.classList.add("checked");
+            // console.log("clicked");
+          } else if (labelElement.classList.contains("checked")) {
+            labelElement.classList.remove("checked");
+            labelElement.classList.add("unchecked");
+            // console.log("unclicked");
+          }
+        }
+      });
+
+    ///// WORKS, BUT ONLY IF YOU CLICK THE INNERHTML TEXT -- NOT THE CHECKBOX /////
+
+      // const taskList = document.getElementsByClassName("unchecked");
+      // Array.from(taskList).forEach((item) => {
+      //   item.addEventListener("click", function(){
+      //     if (item.classList.contains("unchecked")){
+      //       console.log("clicked");
+      //       item.classList.remove("unchecked");
+      //       item.classList.add("checked");
+            
+      //     } else {
+      //       item.classList.remove("checked");
+      //       item.classList.add("unchecked");
+      //       console.log("unclicked");
+      //     }
+      //   })
+      // });
+
+
+    ///// DOESN'T WORK; ONLY TARGETS LAST APPENDED ITEM /////
+
+      // const checkboxList = document.getElementsByName("checkbox");
+      // const taskList = document.getElementsByClassName("unchecked");
+      // for (i=0; i < taskList.length; i++) {
+      //   var currentCheckbox = checkboxList[i];
+      //   var currentTask = taskList[i];
+
+      //   currentCheckbox.addEventListener("click", function(){
+      //     if (currentTask.classList.contains("unchecked")){
+      //       console.log("clicked");
+      //       currentTask.classList.remove("unchecked");
+      //       currentTask.classList.add("checked");
+      //     } else {
+      //       console.log("unclicked");
+      //       currentTask.classList.remove("checked");
+      //       currentTask.classList.add("unchecked");
+
+      //     }
+      //   })
+      //   };
+      
+
+
+
+
+    </script>
+  </body>
+</html>

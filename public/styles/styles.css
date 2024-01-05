@@ -1,0 +1,39 @@
+body {
+  /* Maybe have this change depending on the season? Make it class-based? */
+  background: linear-gradient(white, #f1a661);
+}
+
+#heading {
+  width: 100%;
+  max-width: 540px;
+  display: flex;
+  justify-content: center;
+  margin: 50px auto 10px;
+  background-color: #df7861;
+  border-radius: 10px;
+}
+
+#mainlist {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+}
+
+.task {
+  background-color: green;
+  border-radius: 5%;
+}
+
+.unchecked {
+  color: blue;
+}
+
+.checked {
+  text-decoration: line-through;
+}
+
+input {
+  flex: 1;
+  border: none;
+  outline: none;
+}
