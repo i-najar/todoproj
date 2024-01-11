@@ -21,12 +21,11 @@
       <div class="box" id="checklist">
         <% for (let i = 0; i < tasks.length; i++) { %>
           <div class="task">
-            <input type="checkbox" id="<%= i %>" name="checkbox" value=0/>
-            <label class="unchecked" for="<%= i %>"><%= tasks[i] %></label>
+            <input type="checkbox" id="<%= i %>" name="checkbox" value=0 onclick="deleteTask(this);"/>
+            <label name="labelElement" class="unchecked" for="<%= i %>"><%= tasks[i] %></label>
             <!-- Could modify this by adding      ^ onclick="toggleChecked(this);"-->
           </div>
         <% } %>
-        
 
         <form class="item" action="/" method="post">
           <input type="text" name="newTask" placeholder="New task..." />
@@ -48,6 +47,7 @@
           if (labelElement.classList.contains("unchecked")) {
             labelElement.classList.remove("unchecked");
             labelElement.classList.add("checked");
+            console.log(checkbox.id);
             // console.log("clicked");
           } else if (labelElement.classList.contains("checked")) {
             labelElement.classList.remove("checked");
@@ -57,50 +57,28 @@
         }
       });
 
-    ///// WORKS, BUT ONLY IF YOU CLICK THE INNERHTML TEXT -- NOT THE CHECKBOX /////
+      function deleteTask(checkbox) {
+        const labelElement = checkbox.nextElementSibling;
 
-      // const taskList = document.getElementsByClassName("unchecked");
-      // Array.from(taskList).forEach((item) => {
-      //   item.addEventListener("click", function(){
-      //     if (item.classList.contains("unchecked")){
-      //       console.log("clicked");
-      //       item.classList.remove("unchecked");
-      //       item.classList.add("checked");
-            
-      //     } else {
-      //       item.classList.remove("checked");
-      //       item.classList.add("unchecked");
-      //       console.log("unclicked");
-      //     }
-      //   })
-      // });
+        const taskText = labelElement.innerHTML;
 
+        fetch(`/delete-task/${encodeURIComponent(taskText)}`, {
+          method: 'DELETE',
+        }).then(response => {
+          if (response.ok) {
+            console.log("Should be deleted.");
+            const taskElement = checkbox.closest('.task');
+            if (taskElement) {
+              taskElement.remove();
+            }
 
-    ///// DOESN'T WORK; ONLY TARGETS LAST APPENDED ITEM /////
-
-      // const checkboxList = document.getElementsByName("checkbox");
-      // const taskList = document.getElementsByClassName("unchecked");
-      // for (i=0; i < taskList.length; i++) {
-      //   var currentCheckbox = checkboxList[i];
-      //   var currentTask = taskList[i];
-
-      //   currentCheckbox.addEventListener("click", function(){
-      //     if (currentTask.classList.contains("unchecked")){
-      //       console.log("clicked");
-      //       currentTask.classList.remove("unchecked");
-      //       currentTask.classList.add("checked");
-      //     } else {
-      //       console.log("unclicked");
-      //       currentTask.classList.remove("checked");
-      //       currentTask.classList.add("unchecked");
-
-      //     }
-      //   })
-      //   };
-      
-
-
-
+          } else {
+            throw new Error('Failed to delete task');
+          }
+        }).catch(error => {
+          console.error('Error: ', error);
+        });
+      }
 
     </script>
   </body>

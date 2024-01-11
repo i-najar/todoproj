@@ -59,7 +59,7 @@ async function fetchWeatherData(req) {
     );
     const current_temp_c = (current_temp_k - 273.15).toFixed(1);
     console.log(current_temp_f, current_temp_c, weatherType);
-    console.log("FUNCTION REQ: " + req.body);
+    //console.log("FUNCTION REQ: " + req.body);
 
     // Object created to store F and C data so it can be called in requests.
     // req precedes it to make it accessible in all further calls.
@@ -76,15 +76,14 @@ async function fetchWeatherData(req) {
 }
 
 async function checkTasks() {
-  const result = await db.query("SELECT task FROM tasks");
+  const result = await db.query("SELECT task FROM task_table");
   let taskList = [];
   result.rows.forEach((task) => {
     taskList.push(task.task);
   });
+  console.log("TASK LIST LOCAL: " + taskList);
   return taskList;
 }
-
-// const taskList = [];
 
 app.get("/", async (req, res) => {
   try {
@@ -118,7 +117,13 @@ app.post("/", async (req, res) => {
 
     if (newTask.trim().length != 0) {
       try {
-        await db.query("INSERT INTO tasks (task) VALUES ($1)", [newTask]);
+        const nextID = taskList.length;
+        console.log(nextID);
+
+        await db.query("INSERT INTO task_table (id, task) VALUES ($1, $2)", [
+          nextID,
+          newTask,
+        ]);
         return res.redirect("/");
       } catch (err) {
         return res
@@ -139,10 +144,19 @@ app.post("/", async (req, res) => {
   }
 });
 
-// Create a database to hold tasks
-// Utilize the visitedCountriesChecker function to populate the task list
+app.delete("/delete-task/:taskText", async (req, res) => {
+  const taskText = req.params.taskText;
+  console.log("DELETE TASK ID: " + taskText);
+  try {
+    await db.query("DELETE FROM task_table WHERE task = $1", [taskText]);
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error: ", error);
+    res.sendStatus(500);
+  }
+});
+
 // When checking a task, delete it from the page? Maybe double click removes it from the database.
-// Follow REST API in jsnotes2
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
