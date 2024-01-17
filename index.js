@@ -76,12 +76,25 @@ async function fetchWeatherData(req) {
 }
 
 async function checkTasks() {
-  const result = await db.query("SELECT task FROM task_table");
+  const result = await db.query("SELECT task, priority FROM task_table");
   let taskList = [];
+  let priorityList = [];
+  let taskObject = {};
+
   result.rows.forEach((task) => {
     taskList.push(task.task);
+    const priority = task.priority;
+    const taskName = task.task;
+    if (!taskObject[priority]) {
+      taskObject[priority] = [];
+    }
+    taskObject[priority].push(taskName);
   });
+
   console.log("TASK LIST LOCAL: " + taskList);
+  console.log("PRIORITY LIST: " + priorityList);
+  console.log("TASK OBJECT: ", taskObject);
+
   return taskList;
 }
 
@@ -90,8 +103,6 @@ app.get("/", async (req, res) => {
     const taskList = await checkTasks();
     const weatherData = await fetchWeatherData(req);
     const { fahrenheit, celsius } = req.weatherData;
-
-    console.log("GET TASKLIST: " + taskList);
 
     res.render("index.ejs", {
       fahrenheit,
@@ -111,19 +122,17 @@ app.post("/", async (req, res) => {
     const { fahrenheit, celsius } = req.weatherData;
 
     const newTask = req.body.newTask;
-    console.log(newTask);
-
-    // This handles empty submissions, but not something like "_".
+    const taskPriority = req.body.priority;
 
     if (newTask.trim().length != 0) {
       try {
         const nextID = taskList.length;
         console.log(nextID);
 
-        await db.query("INSERT INTO task_table (id, task) VALUES ($1, $2)", [
-          nextID,
-          newTask,
-        ]);
+        await db.query(
+          "INSERT INTO task_table (id, task, priority) VALUES ($1, $2, $3)",
+          [nextID, newTask, taskPriority]
+        );
         return res.redirect("/");
       } catch (err) {
         return res
@@ -155,8 +164,6 @@ app.delete("/delete-task/:taskText", async (req, res) => {
     res.sendStatus(500);
   }
 });
-
-// When checking a task, delete it from the page? Maybe double click removes it from the database.
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);

@@ -29,6 +29,12 @@
 
         <form class="item" action="/" method="post">
           <input type="text" name="newTask" placeholder="New task..." />
+          <label for="priority">Priority level: </label>
+          <select name="priority" id="priority">
+            <option value="high">High</option>
+            <option value="med">Medium</option>
+            <option value="low">Low</option>
+          </select>
           <button type="submit" name="task">
             <i class="fa-solid fa-arrow-right fa-sm"></i>
           </button>
