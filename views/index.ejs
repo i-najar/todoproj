@@ -19,13 +19,19 @@
     
     <div class="box" id="mainlist">
       <div class="box" id="checklist">
-        <% for (let i = 0; i < tasks.length; i++) { %>
-          <div class="task">
-            <input type="checkbox" id="<%= i %>" name="checkbox" value=0 onclick="deleteTask(this);"/>
-            <label name="labelElement" class="unchecked" for="<%= i %>"><%= tasks[i] %></label>
-            <!-- Could modify this by adding      ^ onclick="toggleChecked(this);"-->
-          </div>
-        <% } %>
+        <% const priorityOrder = ["high", "med", "low"]; %>
+        <% priorityOrder.forEach(priority => { %>
+          <% if (tasks[priority]) { %>
+            <% tasks[priority].forEach((task) => { %>
+              <div class="task">
+                <input type="checkbox" name="checkbox" value=0 onclick="deleteTask(this);"/>
+                <label name="labelElement" class="unchecked" for="<%= task %>"><%= task %></label>
+                <!-- Could modify this by adding      ^ onclick="toggleChecked(this);"-->
+              </div>
+            <% }); %>
+          <% } %>
+        <% }); %>
+
 
         <form class="item" action="/" method="post">
           <input type="text" name="newTask" placeholder="New task..." />

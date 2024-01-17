@@ -78,7 +78,6 @@ async function fetchWeatherData(req) {
 async function checkTasks() {
   const result = await db.query("SELECT task, priority FROM task_table");
   let taskList = [];
-  let priorityList = [];
   let taskObject = {};
 
   result.rows.forEach((task) => {
@@ -91,23 +90,23 @@ async function checkTasks() {
     taskObject[priority].push(taskName);
   });
 
-  console.log("TASK LIST LOCAL: " + taskList);
-  console.log("PRIORITY LIST: " + priorityList);
+  // console.log("TASK LIST LOCAL: " + taskList);
   console.log("TASK OBJECT: ", taskObject);
 
-  return taskList;
+  // return taskList;
+  return taskObject;
 }
 
 app.get("/", async (req, res) => {
   try {
-    const taskList = await checkTasks();
+    const taskObject = await checkTasks();
     const weatherData = await fetchWeatherData(req);
     const { fahrenheit, celsius } = req.weatherData;
 
     res.render("index.ejs", {
       fahrenheit,
       celsius,
-      tasks: taskList,
+      tasks: taskObject,
     });
   } catch (error) {
     console.error("Error: ", error);
@@ -117,7 +116,7 @@ app.get("/", async (req, res) => {
 
 app.post("/", async (req, res) => {
   try {
-    const taskList = await checkTasks();
+    const taskObject = await checkTasks();
     const weatherData = await fetchWeatherData(req);
     const { fahrenheit, celsius } = req.weatherData;
 
@@ -126,12 +125,9 @@ app.post("/", async (req, res) => {
 
     if (newTask.trim().length != 0) {
       try {
-        const nextID = taskList.length;
-        console.log(nextID);
-
         await db.query(
-          "INSERT INTO task_table (id, task, priority) VALUES ($1, $2, $3)",
-          [nextID, newTask, taskPriority]
+          "INSERT INTO task_table (task, priority) VALUES ($1, $2)",
+          [newTask, taskPriority]
         );
         return res.redirect("/");
       } catch (err) {
@@ -140,11 +136,11 @@ app.post("/", async (req, res) => {
           .json({ error: "Error adding task to the database." });
       }
     } else {
-      console.log("ELSE POST: " + taskList);
+      console.log("ELSE POST: " + taskObject);
       return res.render("index.ejs", {
         fahrenheit,
         celsius,
-        tasks: taskList,
+        tasks: taskObject,
       });
     }
   } catch (err) {
@@ -155,7 +151,7 @@ app.post("/", async (req, res) => {
 
 app.delete("/delete-task/:taskText", async (req, res) => {
   const taskText = req.params.taskText;
-  console.log("DELETE TASK ID: " + taskText);
+  console.log("DELETE TASK: " + taskText);
   try {
     await db.query("DELETE FROM task_table WHERE task = $1", [taskText]);
     res.sendStatus(200);
