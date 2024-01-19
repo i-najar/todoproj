@@ -8,43 +8,46 @@
     <title>ToDo App</title>
   </head>
   <body>
-    <div class="box" id="heading">
-      <!-- DATE DATA -->
-      <%- include("partials/date.ejs") %>
-    </div>
-    
-    <div class="box" id="weather">
-      <h2>Today's Weather: <%=fahrenheit %>°F / <%=celsius %>°C </h2>
-    </div>
-    
-    <div class="box" id="mainlist">
-      <div class="box" id="checklist">
-        <% const priorityOrder = ["high", "med", "low"]; %>
-        <% priorityOrder.forEach(priority => { %>
-          <% if (tasks[priority]) { %>
-            <% tasks[priority].forEach((task) => { %>
-              <div class="task">
-                <input type="checkbox" name="checkbox" value=0 onclick="deleteTask(this);"/>
-                <label name="labelElement" class="unchecked" for="<%= task %>"><%= task %></label>
-                <!-- Could modify this by adding      ^ onclick="toggleChecked(this);"-->
-              </div>
-            <% }); %>
-          <% } %>
-        <% }); %>
+    <div class="container">
+      <div class="col-sm box" id="heading">
+        <!-- DATE DATA -->
+        <%- include("partials/date.ejs") %>
+      </div>
+      
+      <div class="box" id="weather">
+        <h2>Today's Weather: <%=fahrenheit %>°F / <%=celsius %>°C </h2>
+      </div>
+      
+      <div class="box" id="mainlist">
+        <div class="box" id="checklist">
 
+          <form class="item" action="/" method="post">
+            <input id="newTaskInput" type="text" name="newTask" placeholder="New task..." />
+            <label for="priority">Priority level: </label>
+            <select name="priority" id="priority">
+              <option value="high">High</option>
+              <option value="med">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <button type="submit" name="task">
+              <i class="fa-solid fa-arrow-right fa-sm"></i>
+            </button>
+          </form>
 
-        <form class="item" action="/" method="post">
-          <input type="text" name="newTask" placeholder="New task..." />
-          <label for="priority">Priority level: </label>
-          <select name="priority" id="priority">
-            <option value="high">High</option>
-            <option value="med">Medium</option>
-            <option value="low">Low</option>
-          </select>
-          <button type="submit" name="task">
-            <i class="fa-solid fa-arrow-right fa-sm"></i>
-          </button>
-        </form>
+          <% const priorityOrder = ["high", "med", "low"]; %>
+          <% priorityOrder.forEach(priority => { %>
+            <% if (tasks[priority]) { %>
+              <% tasks[priority].forEach((task) => { %>
+                <div class="task">
+                  <input type="checkbox" name="checkbox" value=0 onclick="deleteTask(this);"/>
+                  <label name="labelElement" class="unchecked" for="<%= task %>"><%= task %></label>
+                  <!-- Could modify this by adding      ^ onclick="toggleChecked(this);"-->
+                </div>
+              <% }); %>
+            <% } %>
+          <% }); %>
+          
+        </div>
       </div>
     </div>
     <script>
