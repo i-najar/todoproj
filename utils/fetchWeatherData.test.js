@@ -48,7 +48,6 @@ describe("fetchWeatherData", () => {
   });
 
   it("should throw error fetching temperature", async () => {
-    const incorrectApiKey = "abc";
     jest.mock("axios", () => {
       return {
         get: jest.fn(() => {
