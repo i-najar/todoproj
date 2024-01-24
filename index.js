@@ -18,13 +18,18 @@ const port = 3000;
 // -------------------------- //
 
 const pgPassword = process.env.PG_PASSWORD;
+const pgUsername = process.env.PG_USERNAME;
+const pgHost = process.env.PG_HOST;
+const pgDatabase = process.env.PG_DATABASE;
+const pgPort = process.env.PG_PORT;
+
 // make all params env
 const db = new pg.Client({
-  user: "postgres",
-  host: "localhost",
-  database: "todolistproj",
+  user: pgUsername,
+  host: pgHost,
+  database: pgDatabase,
   password: pgPassword,
-  port: 5432,
+  port: pgPort,
 });
 db.connect();
 

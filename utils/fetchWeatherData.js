@@ -1,17 +1,15 @@
 import axios from "axios";
 
-const apiKey = process.env.WEATHER_API_KEY;
-// make env
-const latitude = 40.7128;
-const longitude = -74.006;
-
 const fetchWeatherData = async (req) => {
+  const apiKey = process.env.WEATHER_API_KEY;
+  const latitude = process.env.WEATHER_API_LAT;
+  const longitude = process.env.WEATHER_API_LONG;
+
   const apiLink = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
 
   try {
-    console.log(apiKey);
     const response = await axios.get(apiLink);
-
+    console.log(response);
     // v Displays basic string weather desc. (viz. "Clouds")
     const weatherType = response.data.weather[0].main;
     // data.weather[0].description more specific ("overcast clouds")
