@@ -40,6 +40,10 @@ async function checkTasks() {
   return taskObject;
 }
 
+// make sep files vvv
+// calling right functions; using the right arguments
+// mutation + end-to-end testing
+
 router.get("/", async (req, res) => {
   try {
     const taskObject = await checkTasks();
