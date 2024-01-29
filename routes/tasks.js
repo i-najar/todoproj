@@ -21,30 +21,6 @@ const db = new pg.Client({
 });
 db.connect();
 
-// async function checkTasks() {
-//   const result = await db.query("SELECT task, priority FROM task_table");
-//   let taskList = [];
-//   let taskObject = {};
-
-//   result.rows.forEach((task) => {
-//     taskList.push(task.task);
-//     const priority = task.priority;
-//     const taskName = task.task;
-//     if (!taskObject[priority]) {
-//       taskObject[priority] = [];
-//     }
-//     taskObject[priority].push(taskName);
-//   });
-
-//   console.log("TASK OBJECT: ", taskObject);
-
-//   return taskObject;
-// }
-
-// make sep files vvv
-// calling right functions; using the right arguments
-// mutation + end-to-end testing
-
 router.get("/", async (req, res) => {
   try {
     const taskObject = await checkTasks();

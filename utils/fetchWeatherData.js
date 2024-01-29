@@ -9,7 +9,7 @@ const fetchWeatherData = async (req) => {
 
   try {
     const response = await axios.get(apiLink);
-    console.log(response);
+    // console.log(response);
     // v Displays basic string weather desc. (viz. "Clouds")
     const weatherType = response.data.weather[0].main;
     // data.weather[0].description more specific ("overcast clouds")
@@ -31,7 +31,7 @@ const fetchWeatherData = async (req) => {
       weatherType,
     };
 
-    console.log("WEATHER DATA: " + req.weatherData);
+    //console.log("WEATHER DATA: " + req.weatherData);
     return req.weatherData;
   } catch (error) {
     console.log(error);

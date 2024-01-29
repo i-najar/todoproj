@@ -17,11 +17,9 @@ db.connect();
 
 async function checkTasks() {
   const result = await db.query("SELECT task, priority FROM task_table");
-  let taskList = [];
   let taskObject = {};
 
   result.rows.forEach((task) => {
-    taskList.push(task.task);
     const priority = task.priority;
     const taskName = task.task;
     if (!taskObject[priority]) {
@@ -31,7 +29,6 @@ async function checkTasks() {
   });
 
   console.log("TASK OBJECT: ", taskObject);
-
   return taskObject;
 }
 
