@@ -14,8 +14,6 @@ const fetchWeatherData = async (req) => {
     const weatherType = response.data.weather[0].main;
     // data.weather[0].description more specific ("overcast clouds")
 
-    // Perhaps add corresponding images to suit each weather type. Maybe store in an obj.
-
     const current_temp_k = parseInt(response.data.main.temp);
 
     const current_temp_f = ((current_temp_k - 273.15) * (9 / 5) + 32).toFixed(
