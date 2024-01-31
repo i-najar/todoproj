@@ -2,7 +2,7 @@ import db from "../database/postgres.database.js";
 
 async function checkTasks() {
   const result = await db.query("SELECT task, priority FROM task_table");
-  console.log("CHECKTASKS RESULT: ", result);
+  //console.log("CHECKTASKS RESULT: ", result);
   let taskObject = {};
 
   result.rows.forEach((task) => {
@@ -14,7 +14,7 @@ async function checkTasks() {
     taskObject[priority].push(taskName);
   });
 
-  console.log("TASK OBJECT: ", taskObject);
+  // console.log("TASK OBJECT: ", taskObject);
   return taskObject;
 }
 

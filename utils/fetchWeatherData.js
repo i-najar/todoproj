@@ -23,8 +23,6 @@ const fetchWeatherData = async (req) => {
     console.log(current_temp_f, current_temp_c, weatherType);
     //console.log("FUNCTION REQ: " + req.body);
 
-    // Object created to store F and C data so it can be called in requests.
-    // req precedes it to make it accessible in all further calls.
     req.weatherData = {
       fahrenheit: current_temp_f,
       celsius: current_temp_c,
@@ -35,7 +33,8 @@ const fetchWeatherData = async (req) => {
     return req.weatherData;
   } catch (error) {
     console.log(error);
-    throw new Error("Error fetching temperature: ", error);
+    // Thrown with invalid API key:
+    throw new Error("Error fetching temperature: Invalid API key", error);
   }
 };
 
