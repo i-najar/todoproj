@@ -1,22 +1,8 @@
-import pg from "pg";
-
-const pgPassword = process.env.PG_PASSWORD;
-const pgUsername = process.env.PG_USERNAME;
-const pgHost = process.env.PG_HOST;
-const pgDatabase = process.env.PG_DATABASE;
-const pgPort = process.env.PG_PORT;
-
-const db = new pg.Client({
-  user: pgUsername,
-  host: pgHost,
-  database: pgDatabase,
-  password: pgPassword,
-  port: pgPort,
-});
-db.connect();
+import db from "../database/postgres.database.js";
 
 async function checkTasks() {
   const result = await db.query("SELECT task, priority FROM task_table");
+  console.log("CHECKTASKS RESULT: ", result);
   let taskObject = {};
 
   result.rows.forEach((task) => {
