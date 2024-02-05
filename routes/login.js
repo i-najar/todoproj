@@ -1,15 +1,20 @@
 import express from "express";
+import dotenv from "dotenv";
 import pg from "pg";
-import { dirname } from "path";
+import path from "path";
 import { fileURLToPath } from "url";
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const { Pool } = pg;
 
 const app = express();
 const port = 3000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: "../.env" });
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "../views")));
 
 const pool = new Pool({
   user: process.env.PG_USERNAME,
@@ -21,12 +26,17 @@ const pool = new Pool({
 
 app.post("/auth", async (req, res) => {});
 
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "../views/login.html"));
+});
+
 app.get("/register", (req, res) => {
-  res.sendFile(__dirname + "../views/register.html");
+  res.sendFile(path.join(__dirname, "../views/register.html"));
 });
 
 app.post("/register", async (req, res) => {
   const { username, password, email } = req.body;
+  console.log(typeof password);
   console.log(req.body);
 
   try {
@@ -35,6 +45,7 @@ app.post("/register", async (req, res) => {
       "INSERT INTO users (username, password, email) VALUES ($1, $2, $3)",
       [username, password, email]
     );
+    console.log("PASSWORD TYPE:" + typeof password);
 
     res.redirect("/login");
     client.release();
