@@ -1,5 +1,7 @@
 import db from "../database/postgres.database.js";
 
+// import function that returns task_table name; that goes into result. Save it as a const.
+
 async function checkTasks() {
   const result = await db.query("SELECT task, priority FROM task_table");
   //console.log("CHECKTASKS RESULT: ", result);
