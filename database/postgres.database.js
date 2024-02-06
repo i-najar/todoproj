@@ -1,17 +1,11 @@
 import pg from "pg";
 
-const pgPassword = process.env.PG_PASSWORD;
-const pgUsername = process.env.PG_USERNAME;
-const pgHost = process.env.PG_HOST;
-const pgDatabase = process.env.PG_DATABASE;
-const pgPort = process.env.PG_PORT;
-
 const db = new pg.Client({
-  user: pgUsername,
-  host: pgHost,
-  database: pgDatabase,
-  password: pgPassword,
-  port: pgPort,
+  user: process.env.PG_USERNAME,
+  host: process.env.PG_HOST,
+  database: process.env.PG_DATABASE,
+  password: process.env.PG_PASSWORD,
+  port: process.env.PG_PORT,
 });
 db.connect();
 
