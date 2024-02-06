@@ -8,7 +8,6 @@ import { fileURLToPath } from "url";
 const { Pool } = pg;
 
 const loginRouter = express.Router();
-const port = 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -23,6 +22,10 @@ const pool = new Pool({
   database: process.env.PG_DATABASE,
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT,
+});
+
+loginRouter.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "../views/login.html"));
 });
 
 loginRouter.post("/auth", async (req, res) => {
@@ -53,10 +56,6 @@ loginRouter.post("/auth", async (req, res) => {
     console.error("Error during authentication:", error);
     res.status(500).send("Internal Server Error");
   }
-});
-
-loginRouter.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "../views/login.html"));
 });
 
 loginRouter.get("/register", (req, res) => {
