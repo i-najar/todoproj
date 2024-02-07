@@ -13,7 +13,7 @@ app.use(express.static("public"));
 
 app.use("/", welcomeRouter);
 app.use("/", loginRouter);
-app.use("/daily", tasksRouter);
+app.use("/", tasksRouter);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);

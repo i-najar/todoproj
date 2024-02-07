@@ -6,9 +6,11 @@ import checkTasks from "../utils/checkTasks.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/daily", async (req, res) => {
   try {
-    const taskObject = await checkTasks();
+    const username = req.session.username;
+    console.log("REQ SESSION: " + req.session);
+    const taskObject = await checkTasks(username);
     const weatherData = await fetchWeatherData(req);
     const { fahrenheit, celsius } = req.weatherData;
 
@@ -23,12 +25,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/daily", async (req, res) => {
   try {
-    const taskObject = await checkTasks();
+    const taskObject = await checkTasks(req.session.username);
     const weatherData = await fetchWeatherData(req);
     const { fahrenheit, celsius } = req.weatherData;
-
     const newTask = req.body.newTask;
     const taskPriority = req.body.priority;
 
@@ -44,7 +45,7 @@ router.post("/", async (req, res) => {
           "INSERT INTO task_table (task, priority, user_id) VALUES ($1, $2, $3)",
           [newTask, taskPriority, userID]
         );
-        return res.redirect("/");
+        return res.redirect("/daily");
       } catch (err) {
         return res
           .status(500)
@@ -64,7 +65,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.delete("/delete-task/:taskText", async (req, res) => {
+router.delete("/daily/delete-task/:taskText", async (req, res) => {
+  console.log("ROUTER RECEIVED DELETE MESSAGE");
   const taskText = req.params.taskText;
   console.log("DELETE TASK: " + taskText);
   try {

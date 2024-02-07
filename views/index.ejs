@@ -21,7 +21,7 @@
       <div class="box" id="mainlist">
         <div class="box" id="checklist">
 
-          <form class="item" action="/" method="post">
+          <form class="item" action="/daily" method="post">
             <input id="newTaskInput" type="text" name="newTask" placeholder="New task..." />
             <label for="priority">Priority level: </label>
             <select name="priority" id="priority">
@@ -30,7 +30,7 @@
               <option value="low">Low</option>
             </select>
             <button type="submit" name="task">
-              <i class="fa-solid fa-arrow-right fa-sm"></i>
+              Submit
             </button>
           </form>
 
@@ -39,62 +39,149 @@
             <% if (tasks[priority]) { %>
               <% tasks[priority].forEach((task) => { %>
                 <div class="task">
-                  <input type="checkbox" name="checkbox" value=0 onclick="deleteTask(this);"/>
-                  <label name="labelElement" class="unchecked" for="<%= task %>"><%= task %></label>
+                  <div class="content">
+                    <input type="checkbox" name="checkbox" value=0 />
+                    <label name="labelElement" class="unchecked" for="<%= task %>"><%= task %></label>
+                  </div>
                   <!-- Could modify this by adding      ^ onclick="toggleChecked(this);"-->
+                  <button id="editButton" class="editButton" type="button" name="Edit">Edit</button>
                 </div>
               <% }); %>
             <% } %>
           <% }); %>
+
+          <button id="#deleteButton" class="hiddenButton" type="button" name="Delete">Delete</button>
           
         </div>
       </div>
     </div>
     <script>
 
+      document.addEventListener("DOMContentLoaded", function() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        checkboxes.forEach(function(checkbox) {
+          const labelElement = checkbox.nextElementSibling;
+
+          if (labelElement.classList.contains("checked")) {
+            checkbox.checked = true;
+          } else {
+            checkbox.checked = false;
+          }
+        })
+      })
+
       const checkboxList = document.getElementById("checklist");
+      const checkedElements = [];
+
       checkboxList.addEventListener("click", (event) => {
         const clickedElement = event.target;
 
         if (clickedElement.type === "checkbox") {
           const labelElement = clickedElement.nextElementSibling;
+          const deleteButton = document.getElementById("#deleteButton");
 
           if (labelElement.classList.contains("unchecked")) {
             labelElement.classList.remove("unchecked");
             labelElement.classList.add("checked");
-            console.log(checkbox.id);
+            const index = checkedElements.indexOf(clickedElement);
+            if (index === -1) {
+              checkedElements.push(clickedElement);
+            }
+
+            if (checkedElements.length > 0) {
+              deleteButton.classList.remove("hiddenButton");
+              console.log(checkedElements);
+            }    
+            
             console.log("CLICKED");
-            // console.log("clicked");
           } else if (labelElement.classList.contains("checked")) {
             labelElement.classList.remove("checked");
             labelElement.classList.add("unchecked");
+            const index = checkedElements.indexOf(clickedElement);
+            if (index !== -1) {
+              checkedElements.splice(index, 1);
+            }
+
+            if (checkedElements.length == 0) {
+              deleteButton.classList.add("hiddenButton");
+              console.log(checkedElements);
+            }
             // console.log("unclicked");
           }
         }
       });
 
-      function deleteTask(checkbox) {
-        const labelElement = checkbox.nextElementSibling;
+      const deleteButton = document.getElementById("#deleteButton");
+      deleteButton.addEventListener("click", () => {
+        checkedElements.forEach(checkbox => {
+          const labelElement = checkbox.nextElementSibling;
+          const taskText = labelElement.innerHTML;
+          
+          console.log("CLICKED DELETE BUTTON");
+          console.log("THIS IS THE TASK TEXT:" + taskText);
 
-        const taskText = labelElement.innerHTML;
-
-        fetch(`/delete-task/${encodeURIComponent(taskText)}`, {
-          method: 'DELETE',
-        }).then(response => {
-          if (response.ok) {
-            console.log("Should be deleted.");
-            const taskElement = checkbox.closest('.task');
-            if (taskElement) {
-              taskElement.remove();
+          fetch(`/daily/delete-task/${encodeURIComponent(taskText)}`, {
+            method: 'DELETE',
+          }).then(response => {
+            console.log("FETCH WORKED!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            console.log("RESPONSE: " + response.type);
+            if (response.ok) {
+              console.log("Task deleted: ", taskText);
+              const taskElement = checkbox.closest('.task');
+              if (taskElement) {
+                taskElement.remove();
+              }
+            } else {
+              throw new Error('Failed to delete task');
             }
-
-          } else {
-            throw new Error('Failed to delete task');
-          }
-        }).catch(error => {
-          console.error('Error: ', error);
+          }).catch(error => {
+            console.error('Error: ', error);
+          });
         });
-      }
+
+        checkedElements.length = 0;
+        deleteButton.classList.add("hiddenButton");
+      })
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const taskContainers = document.querySelector('.task');
+        taskContainers.forEach(function(taskContainer) {
+          const editButton = taskContainer.querySelector('.editButton');
+
+          taskContainer.addEventListener('mouseenter', () => {
+            editButton.style.opacity = '1';
+          });
+
+          taskContainer.addEventListener('mouseleave', () => {
+            editButton.style.opacity = '0';
+          });
+        });
+      });
+
+
+      // function deleteTask(checkbox) {
+      //   const labelElement = checkbox.nextElementSibling;
+
+      //   const taskText = labelElement.innerHTML;
+
+      //   fetch(`/delete-task/${encodeURIComponent(taskText)}`, {
+      //     method: 'DELETE',
+      //   }).then(response => {
+      //     if (response.ok) {
+      //       console.log("Should be deleted.");
+      //       const taskElement = checkbox.closest('.task');
+      //       if (taskElement) {
+      //         taskElement.remove();
+      //       }
+
+      //     } else {
+      //       throw new Error('Failed to delete task');
+      //     }
+      //   }).catch(error => {
+      //     console.error('Error: ', error);
+      //   });
+      // }
 
     </script>
   </body>
