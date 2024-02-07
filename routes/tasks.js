@@ -34,9 +34,15 @@ router.post("/", async (req, res) => {
 
     if (newTask.trim().length != 0) {
       try {
+        const username = req.session.username;
+        const result = await db.query(
+          "SELECT id from users WHERE username = $1",
+          [username]
+        );
+        const userID = result.rows[0].id;
         await db.query(
-          "INSERT INTO task_table (task, priority) VALUES ($1, $2)",
-          [newTask, taskPriority]
+          "INSERT INTO task_table (task, priority, user_id) VALUES ($1, $2, $3)",
+          [newTask, taskPriority, userID]
         );
         return res.redirect("/");
       } catch (err) {

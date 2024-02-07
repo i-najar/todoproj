@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 welcomeRouter.use(express.urlencoded({ extended: true }));
 welcomeRouter.use(express.static(path.join(__dirname, "../views")));
 
-welcomeRouter.get("/home", (req, res) => {
+welcomeRouter.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../views/welcome.html"));
 });
 

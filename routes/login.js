@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import session from "express-session";
 import pg from "pg";
 import path from "path";
 import bcrypt from "bcrypt";
@@ -15,6 +16,13 @@ dotenv.config({ path: "../.env" });
 
 loginRouter.use(express.urlencoded({ extended: true }));
 loginRouter.use(express.static(path.join(__dirname, "../views")));
+loginRouter.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 const pool = new Pool({
   user: process.env.PG_USERNAME,
@@ -43,7 +51,8 @@ loginRouter.post("/auth", async (req, res) => {
       const passwordMatch = await bcrypt.compare(password, hashedPassword);
 
       if (passwordMatch) {
-        res.redirect("/");
+        req.session.username = username;
+        res.redirect("/daily");
       } else {
         res.status(401).json({ error: "Invalid credentials" });
       }
