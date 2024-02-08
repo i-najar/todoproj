@@ -73,7 +73,7 @@ label {
 
 .task {
   display: flex;
-  border-radius: 5%;
+  border-radius: 30px;
   margin: 5px;
   padding: 10px 0;
   background-color: #2a2e54;
@@ -84,6 +84,28 @@ label {
 .task:hover .editButton {
   opacity: 1;
 }
+
+.task.high {
+  /* background-color: #c32605; */
+  border-style: dashed;
+  border-color: #c32605;
+}
+
+.task.med {
+  border-style: solid;
+  border-color: #fabc59;
+}
+
+.task.low {
+  border-style: none solid;
+  border-color: #47af78;
+}
+
+/* .accessibility {
+  high: #c44601;
+  med: #f57600;
+  low: #8babf1;
+} */
 
 .content {
   flex: 1;

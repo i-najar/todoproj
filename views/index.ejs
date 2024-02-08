@@ -38,7 +38,7 @@
           <% priorityOrder.forEach(priority => { %>
             <% if (tasks[priority]) { %>
               <% tasks[priority].forEach((task) => { %>
-                <div class="task">
+                <div class="task <%= priority %>">
                   <div class="content">
                     <input type="checkbox" name="checkbox" value=0 />
                     <label name="labelElement" class="unchecked" for="<%= task %>"><%= task %></label>
@@ -117,15 +117,10 @@
         checkedElements.forEach(checkbox => {
           const labelElement = checkbox.nextElementSibling;
           const taskText = labelElement.innerHTML;
-          
-          console.log("CLICKED DELETE BUTTON");
-          console.log("THIS IS THE TASK TEXT:" + taskText);
 
           fetch(`/daily/delete-task/${encodeURIComponent(taskText)}`, {
             method: 'DELETE',
           }).then(response => {
-            console.log("FETCH WORKED!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            console.log("RESPONSE: " + response.type);
             if (response.ok) {
               console.log("Task deleted: ", taskText);
               const taskElement = checkbox.closest('.task');

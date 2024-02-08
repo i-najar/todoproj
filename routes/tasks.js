@@ -66,7 +66,6 @@ router.post("/daily", async (req, res) => {
 });
 
 router.delete("/daily/delete-task/:taskText", async (req, res) => {
-  console.log("ROUTER RECEIVED DELETE MESSAGE");
   const taskText = req.params.taskText;
   console.log("DELETE TASK: " + taskText);
   try {
