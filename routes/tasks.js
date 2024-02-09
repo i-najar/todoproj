@@ -65,15 +65,15 @@ router.post("/daily", async (req, res) => {
   }
 });
 
-router.put("/daily/update-task/:originalText", async (req, res) => {
+router.put("/daily/update-task/:taskId", async (req, res) => {
   console.log("PUT REQUEST RECEIVED");
-  const originalText = req.params.originalText;
+  const taskId = req.params.taskId;
   const newTaskText = req.body.newTaskText;
 
   try {
     await db.query("UPDATE task_table SET task = $1 WHERE id = $2", [
       newTaskText,
-      originalText,
+      taskId,
     ]);
     res.redirect("/daily");
   } catch (error) {

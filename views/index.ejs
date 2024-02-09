@@ -108,10 +108,10 @@
           <% priorityOrder.forEach(priority => { %>
             <% if (tasks[priority]) { %>
               <% tasks[priority].forEach((task) => { %>
-                <div class="task <%= priority %>">
+                <div class="task <%= priority %>" data-taskId="<%= task[Object.keys(task)[0]] %>">
                   <div class="content">
                     <input type="checkbox" name="checkbox" value=0 />
-                    <label name="labelElement" class="unchecked" contenteditable="false" for="<%= task %>"><%= task %></label>
+                    <label name="labelElement" class="unchecked" contenteditable="false" for="<%= task %>"><%=  Object.keys(task)[0] %></label>
                     <span class="placeholder" style="display: none;">&#8203;</span>
                   </div>
                   <!-- Could modify this by adding      ^ onclick="toggleChecked(this);"-->
@@ -162,42 +162,77 @@
             labelElement.contentEditable = "true";
             labelElement.focus();
 
-            editButton.dataset.originalText = labelElement.textContent;
-
             saveButton.classList.remove("hiddenButton");
           });
-        // } for loop bracket
+        } 
           const saveButton = document.getElementById("#saveButton");
-          saveButton.addEventListener("click", function() {
-            console.log(this.dataset.originalText);
-            console.log("clicked");
+          saveButton.addEventListener("click", async function() {
+            console.log("CLICKED!!!!!!!!!!!");
+            console.log("THIS:" + this);
+            console.log("THIS CLOSEST: " + this.closest(".task"));
+            saveButton.classList.add("hiddenButton");
 
-            const originalText = this.dataset.originalText;
-            const newTaskText = this.previousElementSibling.querySelector("label").textContent;
+            const labelElement = document.querySelector(".task label[contenteditable=true]");
+            const newTaskText = labelElement.textContent.trim();
 
-            
-            console.log(originalText);
-            console.log(this.dataset.originalText);
+            const taskID = this.closest(".task").dataset.taskId;
 
-            fetch(`/daily/update-task/${encodeURIComponent(originalText)}`, {
+            try {
+              const response = await fetch(`/daily/update-task/${taskID}`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify({ newTaskText })
-            }).then(response => {
-              if (response.ok) {
-                console.log("Task updated successfully");
-                this.style.display = "none";
-              } else {
-                throw new Error('Failed to update task');
-              }
-            }).catch(error => {
-              console.error("Error: ", error);
+              body: JSON.stringify({
+                taskId: taskID,
+                newTaskText: newTaskText
+              })
             });
-          })();
-        }
+
+            if (response.ok) {
+              console.log("Task updated successfully");
+            } else {
+              console.error("Failed to update task");
+            }
+          } catch (error) {
+            console.error("Error updating task: ", error);
+          }
+        });
       });
+      
+      
+      
+      
+          //     saveButton.addEventListener("click", function() {
+      //       console.log(this.dataset.originalText);
+      //       console.log("clicked");
+
+      //       const originalText = this.dataset.originalText;
+      //       const newTaskText = this.previousElementSibling.querySelector("label").textContent;
+
+            
+      //       console.log(originalText);
+      //       console.log(this.dataset.originalText);
+
+      //       fetch(`/daily/update-task/${encodeURIComponent(originalText)}`, {
+      //         method: 'PUT',
+      //         headers: {
+      //           'Content-Type': 'application/json'
+      //         },
+      //         body: JSON.stringify({ newTaskText })
+      //       }).then(response => {
+      //         if (response.ok) {
+      //           console.log("Task updated successfully");
+      //           this.style.display = "none";
+      //         } else {
+      //           throw new Error('Failed to update task');
+      //         }
+      //       }).catch(error => {
+      //         console.error("Error: ", error);
+      //       });
+      //     })();
+      //   }
+      // });
 
 
       const checkboxList = document.getElementById("checklist");

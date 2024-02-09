@@ -5,7 +5,7 @@ import db from "../database/postgres.database.js";
 async function checkTasks(username) {
   try {
     const result = await db.query(
-      `SELECT task_table.task, task_table.priority
+      `SELECT task_table.task, task_table.priority, task_table.id
       FROM task_table
       JOIN users ON task_table.user_id = users.id
       WHERE users.username = $1`,
@@ -17,10 +17,11 @@ async function checkTasks(username) {
     result.rows.forEach((task) => {
       const priority = task.priority;
       const taskName = task.task;
+      const taskId = task.id;
       if (!taskObject[priority]) {
         taskObject[priority] = [];
       }
-      taskObject[priority].push(taskName);
+      taskObject[priority].push({ [taskName]: taskId });
     });
 
     // console.log("TASK OBJECT: ", taskObject);
