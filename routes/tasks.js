@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/daily", async (req, res) => {
   try {
     const username = req.session.username;
-    console.log("REQ SESSION: " + req.session);
+    //console.log("REQ SESSION: " + req.session);
     const taskObject = await checkTasks(username);
     const weatherData = await fetchWeatherData(req);
     const { fahrenheit, celsius } = req.weatherData;
@@ -62,6 +62,23 @@ router.post("/daily", async (req, res) => {
   } catch (err) {
     console.error("Error: ", err);
     res.status(500).json({ error: "An error occurred." });
+  }
+});
+
+router.put("/daily/update-task/:originalText", async (req, res) => {
+  console.log("PUT REQUEST RECEIVED");
+  const originalText = req.params.originalText;
+  const newTaskText = req.body.newTaskText;
+
+  try {
+    await db.query("UPDATE task_table SET task = $1 WHERE id = $2", [
+      newTaskText,
+      originalText,
+    ]);
+    res.redirect("/daily");
+  } catch (error) {
+    console.error("Error updating task: ", error);
+    res.sendStatus(500);
   }
 });
 

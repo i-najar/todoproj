@@ -111,7 +111,8 @@
                 <div class="task <%= priority %>">
                   <div class="content">
                     <input type="checkbox" name="checkbox" value=0 />
-                    <label name="labelElement" class="unchecked" for="<%= task %>"><%= task %></label>
+                    <label name="labelElement" class="unchecked" contenteditable="false" for="<%= task %>"><%= task %></label>
+                    <span class="placeholder" style="display: none;">&#8203;</span>
                   </div>
                   <!-- Could modify this by adding      ^ onclick="toggleChecked(this);"-->
                   <button id="editButton" class="editButton" type="button" name="Edit">Edit</button>
@@ -121,6 +122,7 @@
           <% }); %>
 
           <button id="#deleteButton" class="hiddenButton" type="button" name="Delete">Delete</button>
+          <button id="#saveButton" class="hiddenButton" type="button" name="Save">Save</button>
           
         </div>
       </div>
@@ -140,6 +142,63 @@
           }
         })
       })
+      
+      document.addEventListener("DOMContentLoaded", () => {
+        const editButtonArray = document.getElementsByClassName("editButton");
+
+        for (let i = 0; i < editButtonArray.length; i++) {
+          editButtonArray[i].addEventListener("click", function() {
+            const labelElement = this.previousElementSibling.querySelector("label");
+            const placeholderSpan = this.previousElementSibling.querySelector(".placeholder");
+            const saveButton = document.getElementById("#saveButton");
+
+            if (!labelElement.textContent.trim()) {
+              placeholderSpan.style.display = "inline";
+              labelElement.textContent = placeholderSpan.textContent;
+            } else {
+              placeholderSpan.style.display = "none";
+            }
+
+            labelElement.contentEditable = "true";
+            labelElement.focus();
+
+            editButton.dataset.originalText = labelElement.textContent;
+
+            saveButton.classList.remove("hiddenButton");
+          });
+        // } for loop bracket
+          const saveButton = document.getElementById("#saveButton");
+          saveButton.addEventListener("click", function() {
+            console.log(this.dataset.originalText);
+            console.log("clicked");
+
+            const originalText = this.dataset.originalText;
+            const newTaskText = this.previousElementSibling.querySelector("label").textContent;
+
+            
+            console.log(originalText);
+            console.log(this.dataset.originalText);
+
+            fetch(`/daily/update-task/${encodeURIComponent(originalText)}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ newTaskText })
+            }).then(response => {
+              if (response.ok) {
+                console.log("Task updated successfully");
+                this.style.display = "none";
+              } else {
+                throw new Error('Failed to update task');
+              }
+            }).catch(error => {
+              console.error("Error: ", error);
+            });
+          })();
+        }
+      });
+
 
       const checkboxList = document.getElementById("checklist");
       const checkedElements = [];
