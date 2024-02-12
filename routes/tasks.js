@@ -6,7 +6,15 @@ import checkTasks from "../utils/checkTasks.js";
 
 const router = express.Router();
 
-router.get("/daily", async (req, res) => {
+const requireLogin = (req, res, next) => {
+  if (!req.session.username) {
+    res.redirect("/login");
+  } else {
+    next();
+  }
+};
+
+router.get("/daily", requireLogin, async (req, res) => {
   try {
     const username = req.session.username;
     //console.log("REQ SESSION: " + req.session);
@@ -25,7 +33,7 @@ router.get("/daily", async (req, res) => {
   }
 });
 
-router.post("/daily", async (req, res) => {
+router.post("/daily", requireLogin, async (req, res) => {
   try {
     const taskObject = await checkTasks(req.session.username);
     const weatherData = await fetchWeatherData(req);
@@ -65,7 +73,7 @@ router.post("/daily", async (req, res) => {
   }
 });
 
-router.put("/daily/update-task/:taskId", async (req, res) => {
+router.put("/daily/update-task/:taskId", requireLogin, async (req, res) => {
   console.log("PUT REQUEST RECEIVED");
   const taskId = req.params.taskId;
   const newTaskText = req.body.newTaskText;
@@ -82,16 +90,20 @@ router.put("/daily/update-task/:taskId", async (req, res) => {
   }
 });
 
-router.delete("/daily/delete-task/:taskText", async (req, res) => {
-  const taskText = req.params.taskText;
-  console.log("DELETE TASK: " + taskText);
-  try {
-    await db.query("DELETE FROM task_table WHERE task = $1", [taskText]);
-    res.sendStatus(200);
-  } catch (error) {
-    console.error("Error: ", error);
-    res.sendStatus(500);
+router.delete(
+  "/daily/delete-task/:taskText",
+  requireLogin,
+  async (req, res) => {
+    const taskText = req.params.taskText;
+    console.log("DELETE TASK: " + taskText);
+    try {
+      await db.query("DELETE FROM task_table WHERE task = $1", [taskText]);
+      res.sendStatus(200);
+    } catch (error) {
+      console.error("Error: ", error);
+      res.sendStatus(500);
+    }
   }
-});
+);
 
 export default router;
