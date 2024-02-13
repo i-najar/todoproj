@@ -1,18 +1,7 @@
-@media only screen and (max-width: 600px) {
-  /* Styles for screens up to 600px wide */
-}
-
-@media only screen and (min-width: 601px) and (max-width: 1024px) {
-  /* Styles for screens between 601px and 1024px wide */
-}
-
-@media only screen and (min-width: 1025px) {
-  /* Styles for screens wider than 1024px */
-}
-
 body {
   /* Maybe have this change depending on the season? Make it class-based? */
-  background: #242641;
+  /* background: #242641; */
+  background: #fff;
 }
 
 .container {
@@ -23,7 +12,7 @@ body {
 }
 
 h2 {
-  color: #fcde9c;
+  color: #df7861;
 }
 
 #heading h1,
@@ -40,7 +29,7 @@ h2 {
   flex-direction: column;
   align-items: center;
   margin: 50px auto 10px;
-  background-color: #df7861;
+  /* background-color: #df7861; */
   border-radius: 10px;
 }
 
@@ -52,20 +41,64 @@ h2 {
 #newTaskInput {
   background: transparent;
   border: none;
-  border-bottom: 2px #fcde9c;
-  color: #e4e7e7;
   padding: 5px;
 }
 
-label {
-  color: #e4e7e7;
+.badge-container {
+  margin-bottom: 5px;
 }
 
+.editButton {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  margin-right: 10px;
+}
+
+.hiddenButton {
+  visibility: hidden;
+}
+
+/* label {
+  color: #e4e7e7;
+} */
+
 .task {
-  border-radius: 5%;
+  display: flex;
   margin: 5px;
-  padding: 10px;
-  background-color: #2a2e54;
+  padding: 10px 0;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.task:hover .editButton {
+  opacity: 1;
+}
+
+/* .task.high {
+  /* background-color: #c32605; */
+/* border-style: none none solid solid;
+  border-color: #c32605; */
+/* }
+
+.task.med { */
+/* border-style: none none solid solid;
+  border-color: #fabc59; */
+/* } */
+
+/* .task.low { */
+/* border-style: none none solid solid;
+  border-color: #47af78; */
+/* } */
+
+/* .accessibility {
+  high: #c44601;
+  med: #f57600;
+  low: #8babf1;
+} */
+
+.content {
+  flex: 1;
 }
 
 .checked {
@@ -73,5 +106,5 @@ label {
 }
 
 ::selection {
-  background: #4c4862;
+  background: #f6e547;
 }

@@ -9,12 +9,10 @@ const fetchWeatherData = async (req) => {
 
   try {
     const response = await axios.get(apiLink);
-    console.log(response);
+    // console.log(response);
     // v Displays basic string weather desc. (viz. "Clouds")
     const weatherType = response.data.weather[0].main;
     // data.weather[0].description more specific ("overcast clouds")
-
-    // Perhaps add corresponding images to suit each weather type. Maybe store in an obj.
 
     const current_temp_k = parseInt(response.data.main.temp);
 
@@ -25,19 +23,18 @@ const fetchWeatherData = async (req) => {
     console.log(current_temp_f, current_temp_c, weatherType);
     //console.log("FUNCTION REQ: " + req.body);
 
-    // Object created to store F and C data so it can be called in requests.
-    // req precedes it to make it accessible in all further calls.
     req.weatherData = {
       fahrenheit: current_temp_f,
       celsius: current_temp_c,
       weatherType,
     };
 
-    console.log("WEATHER DATA: " + req.weatherData);
+    //console.log("WEATHER DATA: " + req.weatherData);
     return req.weatherData;
   } catch (error) {
     console.log(error);
-    throw new Error("Error fetching temperature: ", error);
+    // Thrown with invalid API key:
+    throw new Error("Error fetching temperature: Invalid API key", error);
   }
 };
 
