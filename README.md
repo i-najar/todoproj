@@ -34,7 +34,7 @@ Weather API:
 Documentation: https://openweathermap.org/appid
 
 Variables:
-* An Openweatherapi Key
+* Your API Key
 * Your location's longitude
 * Your location's latitude
 
