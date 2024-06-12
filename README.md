@@ -30,7 +30,7 @@ The core of this project is to provide users with the ability to create, delete,
 
 As this file requires API keys, Postgres database information, and session secrets, it is important to configure your .env file to meet your needs. The following list includes relevant variables that need defining, as well as links to documentation for each:
 
-###Weather API:
+Weather API:
 Documentation: https://openweathermap.org/appid
 
 Variables:
@@ -38,7 +38,7 @@ Variables:
 * Your location's longitude
 * Your location's latitude
 
-###Postgres Database:
+Postgres Database:
 I used pgAdmin to initialize and structure my database.
 Documentation: https://www.pgadmin.org/docs/pgadmin4/latest/getting_started.html
 
@@ -49,5 +49,5 @@ Variables:
 * db name
 * db port
 
-###Express:
+Express:
 Documentation: https://expressjs.com/en/resources/middleware/cookie-session.html
